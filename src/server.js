@@ -63,6 +63,94 @@ app.get('/', (req, res) => {
 });
 
 
+// Routes to render /register page
+app.get('/register', (req, res) => {
+    const pageTitle = 'Register';
+    const pageData = {
+        errorMessage: null,
+        successMessage: null
+    }
+    // First render the page content
+    res.render('register', { title: pageTitle, data: pageData}, (err, pageContent) => {
+        if (err) {
+            console.error(err);
+            return res.status(500).send('Error rendering page');
+        }
+        
+        // Then render the layout with the page content
+        res.render('baseof', { 
+            title: pageTitle, 
+            body: pageContent 
+        });
+    });
+});
+
+app.post('/register', async (req, res) => {
+    const { username, name, email, password } = req.body;
+
+    const pageTitle = 'Register';
+    const pageData = {
+        errorMessage: null,
+        successMessage: null
+    };
+
+    try {
+        // Insert into correct columns (uid auto-incremented)
+        await db.query(
+            `INSERT INTO user (username, name, email, password)
+             VALUES (?, ?, ?, ?)`,
+            [username, name, email, password]
+        );
+
+        pageData.successMessage = "User registered successfully!";
+
+        return res.render('register', { title: pageTitle, data: pageData }, (err, pageContent) => {
+            if (err) {
+                console.error(err);
+                return res.status(500).send('Error rendering page');
+            }
+            res.render('baseof', { 
+                title: pageTitle, 
+                body: pageContent 
+            });
+        });
+
+    } catch (err) {
+        console.error("Database error:", err);
+
+        if (err.code === "ER_DUP_ENTRY") {
+            pageData.errorMessage = "Username or email is already registered!";
+            return res.render('register', { title: pageTitle, data: pageData }, (err, pageContent) => {
+                if (err) {
+                    console.error(err);
+                    return res.status(500).send('Error rendering page');
+                }
+                res.render('baseof', { 
+                    title: pageTitle, 
+                    body: pageContent 
+                });
+            });
+        }
+
+        pageData.errorMessage = "Database error!";
+        return res.render('register', { title: pageTitle, data: pageData }, (err, pageContent) => {
+            if (err) {
+                console.error(err);
+                return res.status(500).send('Error rendering page');
+            }
+            res.render('baseof', { 
+                title: pageTitle, 
+                body: pageContent 
+            });
+        });
+    }
+});
+
+
+
+
+
+
 
 
 
