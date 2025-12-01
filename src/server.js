@@ -63,6 +63,28 @@ app.get('/', (req, res) => {
 });
 
 
+// Define a route to render an EJS view
+app.get('/register', (req, res) => {
+    const pageTitle = 'Register';
+    const pageData = {
+        errorMessage: null,
+        successMessage: null
+    }
+    // First render the page content
+    res.render('register', { title: pageTitle, data: pageData}, (err, pageContent) => {
+        if (err) {
+            console.error(err);
+            return res.status(500).send('Error rendering page');
+        }
+        
+        // Then render the layout with the page content
+        res.render('baseof', { 
+            title: pageTitle, 
+            body: pageContent 
+        });
+    });
+});
+
 
 
 
