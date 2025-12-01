@@ -1,0 +1,81 @@
+<!--
+    Single Source Navigation System
+    Update the navigationItems array below to add/remove/modify menu items
+-->
+<%
+const navigationItems = [
+    { id: 'home', label: 'Home', icon: 'home', href: '/' },
+    { id: 'expenses', label: 'Expenses', icon: 'speedometer2', href: 'expenses' },
+    { id: 'income', label: 'Income', icon: 'table', href: 'income' },
+    { id: 'financial-history', label: 'Financial History', icon: 'grid', href: 'financial-history' },
+    { id: 'settings', label: 'Settings', icon: 'people-circle', href: 'settings' },
+    { id: 'about', label: 'About the app', icon: 'people-circle', href: 'about' },
+    { id: 'report', label: 'Report a bug', icon: 'people-circle', href: 'report' }
+];
+
+// Define active page (can be passed from parent template)
+const currentActivePage = locals.activePage || 'home';
+%>
+
+<!-- Mobile/Tablet: Top Navbar Layout (full width, outside flex container) -->
+<nav class="d-lg-none navbar navbar-expand-lg navbar-dark bg-dark w-100" style="min-height: 70px;">
+        <div class="container-fluid px-0">
+            <a href="/" class="navbar-brand d-flex align-items-center fw-bold">
+                <svg class="bi me-2" width="24" height="24"><use xlink:href="#bootstrap"></use></svg>
+                <span class="fs-5">MFA</span>
+            </a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#responsiveNavbarNav" aria-controls="responsiveNavbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="responsiveNavbarNav">
+                <ul class="navbar-nav me-auto text-center">
+                    <% navigationItems.forEach(item => { %>
+                        <li class="nav-item">
+                            <a href="<%= item.href %>" class="nav-link <%= item.id === currentActivePage ? 'active' : '' %> fw-medium">
+                                <svg class="bi me-2" width="16" height="16"><use xlink:href="#<%= item.icon %>"></use></svg>
+                                <%= item.label %>
+                            </a>
+                        </li>
+                    <% }); %>
+                </ul>
+
+            </div>
+        </div>
+    </nav>
+
+<!-- Desktop: Sidebar Layout (inside flex container) -->
+<div class="responsive-nav">
+    <div class="d-none d-lg-flex flex-column flex-shrink-0 p-3 text-white bg-dark position-fixed start-0 top-0" style="width: 280px; height: 100vh; z-index: 1000;">
+        <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
+            <svg class="bi me-2" width="40" height="32"><use xlink:href="#bootstrap"></use></svg>
+            <span class="fs-4">MFA</span>
+        </a>
+        <hr>
+        <ul class="nav nav-pills flex-column mb-auto">
+            <% navigationItems.forEach(item => { %>
+                <li class="nav-item">
+                    <a href="<%= item.href %>" class="nav-link <%= item.id === currentActivePage ? 'active' : 'text-white' %>" <%= item.id === currentActivePage ? 'aria-current="page"' : '' %>>
+                        <svg class="bi me-2" width="16" height="16"><use xlink:href="#<%= item.icon %>"></use></svg>
+                        <%= item.label %>
+                    </a>
+                </li>
+            <% }); %>
+        </ul>
+        <hr>
+        <div class="dropdown">
+            <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
+                <img src="https://github.com/mdo.png" alt="" width="32" height="32" class="rounded-circle me-2">
+                <strong>mdo</strong>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-dark text-small shadow" aria-labelledby="dropdownUser1">
+                <li><a class="dropdown-item" href="#">New project...</a></li>
+                <li><a class="dropdown-item" href="#">Settings</a></li>
+                <li><a class="dropdown-item" href="#">Profile</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item" href="#">Sign out</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
