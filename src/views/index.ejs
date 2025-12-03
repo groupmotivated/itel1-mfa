@@ -1,5 +1,22 @@
+<% if (!data.username) { %>
 <div class="p-5 m-3 m-md-5 text-center bg-body-tertiary rounded-3 border border-danger border-opacity-50">
     <i class="bi bi-exclamation-octagon text-danger" style="font-size:5em;"></i>
     <h1 class="text-body-emphasis">Work in progress</h1>
     <p class="col-lg-8 mx-auto fs-5 text-muted">This page is currently work-in-progress.</p>
 </div>
+
+<% } else { %>
+<div class="p-3">
+    <h1>Summary</h1>
+    <p>Welcome, <%= data.username %>!</p>
+    
+    <div class="mt-4">
+        <a href="/logout" class="btn btn-danger">Logout</a>
+    </div>
+</div>
+<% } %>
+
+
+
+
+
