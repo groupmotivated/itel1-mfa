@@ -62,6 +62,27 @@ app.get('/', (req, res) => {
     });
 });
 
+// Routes to render /login page
+app.get('/login', (req, res) => {
+    const pageTitle = 'Login';
+    const pageData = {
+        errorMessage: null,
+        successMessage: null
+    }
+    // First render the page content
+    res.render('login', { title: pageTitle, data: pageData}, (err, pageContent) => {
+        if (err) {
+            console.error(err);
+            return res.status(500).send('Error rendering page');
+        }
+        
+        // Then render the layout with the page content
+        res.render('baseof', { 
+            title: pageTitle, 
+            body: pageContent 
+        });
+    });
+});
 
 // Routes to render /register page
 app.get('/register', (req, res) => {
@@ -84,6 +105,8 @@ app.get('/register', (req, res) => {
         });
     });
 });
+
+
 
 app.post('/register', async (req, res) => {
     const { username, name, email, password } = req.body;
