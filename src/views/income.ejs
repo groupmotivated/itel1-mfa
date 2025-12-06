@@ -80,12 +80,12 @@
             </tbody>
         </table>
     </div>
-    <div class="d-flex mx-auto align-items-center gap-2 mb-2">
+    <div >
         <% const currentPage = data.page || 0; %>
         <% const previousPage = currentPage + 1; /* older month */ %>
         <% const nextPage = Math.max(0, currentPage - 1); /* newer month */ %>
         <nav aria-label="Month navigation">
-            <ul class="pagination align-content-center mb-0">
+            <ul class="pagination justify-content-center mb-0">
                 <li class="page-item"><a class="page-link" href="/income?page=<%= previousPage %>">Previous</a></li>
                 <li class="page-item active"><span class="page-link"><%= data.selectedMonthLabel || 'Current Month' %></span></li>
                 <% if (currentPage > 0) { %>
@@ -95,5 +95,7 @@
                 <% } %>
             </ul>
         </nav>
+
+
     </div>
 </div>
