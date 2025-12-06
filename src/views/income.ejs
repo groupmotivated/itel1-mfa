@@ -1,17 +1,15 @@
 <div class="p-2">
     <h1 class="p-2">Income</h1>
     <div class="container-xl w-75 p-2">
-    <div class="row g-4">
-        <div class="col-12 col-lg-6 bg-success text-white border rounded">
-        <div class="p-4">
+    <div class="row g-2">
+        <div class="col-12 col-lg-6 p-4 bg-success text-white border rounded">
             <b class="fs-4">Current Budget</b>
-            <pre class="fs-4">₱<%= parseFloat(data.currentBudget).toFixed(2) %></pre>
-        </div>
+            <pre class="fs-4">₱<%= parseFloat(data.thisMonthBudget).toLocaleString('en-US',{minimumFractionDigits: 2, maximumFractionDigits:2}) %></pre>
         </div>
         <div class="col-12 col-lg-6 bg-success text-white border rounded">
         <div class="p-4">
             <b class="fs-4">This month's income:</b>
-            <pre class="fs-4">₱<%= parseFloat(data.thisMonthIncome).toFixed(2) %></pre>
+            <pre class="fs-4">₱<%= parseFloat(data.thisMonthIncome).toLocaleString('en-US',{minimumFractionDigits: 2, maximumFractionDigits:2}) %></pre>
         </div>
         </div>
     </div>
@@ -39,6 +37,11 @@
                     <div class="mb-3">
                         <label for="incomesource" class="form-label">Source</label>
                         <input type="text" class="form-control" placeholder="Salary..." name="source" id="incomesource" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="incomeDate" class="form-label">Date</label>
+                        <input type="date" class="form-control" id="incomeDate" name="date" placeholder="YYYY-MM-DD">
+                        <div class="form-text">Optional: choose the full date for this income entry. If omitted, today will be used.</div>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -76,5 +79,23 @@
                 <% } %>
             </tbody>
         </table>
+    </div>
+    <div >
+        <% const currentPage = data.page || 0; %>
+        <% const previousPage = currentPage + 1; /* older month */ %>
+        <% const nextPage = Math.max(0, currentPage - 1); /* newer month */ %>
+        <nav aria-label="Month navigation">
+            <ul class="pagination justify-content-center mb-0">
+                <li class="page-item"><a class="page-link" href="/income?page=<%= previousPage %>">Previous</a></li>
+                <li class="page-item active"><span class="page-link"><%= data.selectedMonthLabel || 'Current Month' %></span></li>
+                <% if (currentPage > 0) { %>
+                <li class="page-item"><a class="page-link" href="/income?page=<%= nextPage %>">Next</a></li>
+                <% } else { %>
+                <li class="page-item disabled"><span class="page-link">Next</span></li>
+                <% } %>
+            </ul>
+        </nav>
+
+
     </div>
 </div>

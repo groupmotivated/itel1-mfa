@@ -6,6 +6,7 @@ const session = require('express-session');
 const mysql = require("mysql2");
 let ejs = require('ejs');
 const path = require('path');
+const { access } = require('fs/promises');
 
 // MySQL Server Authentication guides. Please acquire a .env from server.
 const db = mysql.createConnection({
@@ -196,21 +197,33 @@ app.get('/income', isAuthenticated, async (req, res) => {
         username: req.session.username,
         transactions: [],
         currentBudget: 0,
-        thisMonthIncome: 0
+        thisMonthIncome: 0,
+        thisMonthBudget: 0
     };
     
     try {
-        // Fetch all income transactions for the logged-in user
+        // Pagination by month: `?page=0` => current month, `?page=1` => previous month, etc.
+        const page = Math.max(0, parseInt(req.query.page, 10) || 0);
+        const now = new Date();
+        const target = new Date(now.getFullYear(), now.getMonth() - page, 1);
+        const targetMonth = target.getMonth() + 1;
+        const targetYear = target.getFullYear();
+        const monthNames = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+        pageData.page = page;
+        pageData.selectedMonthLabel = `${monthNames[target.getMonth()]} ${targetYear}`;
+
+        // Fetch income transactions for the selected month
         const [transactions] = await db.query(
             `SELECT date, amount, description FROM transactions 
              WHERE userid = ? AND type = 'income' 
+             AND MONTH(date) = ? AND YEAR(date) = ?
              ORDER BY date DESC`,
-            [req.session.userId]
+            [req.session.userId, targetMonth, targetYear]
         );
-        
-        pageData.transactions = transactions;
-        
-        // Calculate current budget (total income - total expenses)
+
+        pageData.transactions = transactions;access
+
+        // Calculate current budget (total income - total expenses overall)
         const [budgetResult] = await db.query(
             `SELECT 
                 COALESCE(SUM(CASE WHEN type = 'income' THEN amount ELSE -amount END), 0) as budget
@@ -218,23 +231,34 @@ app.get('/income', isAuthenticated, async (req, res) => {
              WHERE userid = ?`,
             [req.session.userId]
         );
-        
         pageData.currentBudget = budgetResult[0]?.budget || 0;
-        
-        // Calculate this month's income
+
+        // Calculate this month's budget from the `budget` table (sum of budgets set for the selected month)
+        const mmForBudget = String(targetMonth).padStart(2, '0');
+        const yyyyForBudget = String(targetYear);
+        const budgetMMYYForQuery = `${mmForBudget}${yyyyForBudget}`; // e.g. '122025'
+
+        const [monthlyBudgetResult] = await db.query(
+            `SELECT COALESCE(SUM(amount), 0) as monthlyBudget
+             FROM budget
+             WHERE userId = ? AND budgetMMYY = ?`,
+            [req.session.userId, budgetMMYYForQuery]
+        );
+
+        pageData.thisMonthBudget = monthlyBudgetResult[0]?.monthlyBudget || 0;
+
+        // Calculate this month's income (for selected month)
         const [monthlyResult] = await db.query(
             `SELECT COALESCE(SUM(amount), 0) as monthlyIncome
              FROM transactions 
              WHERE userid = ? AND type = 'income' 
-             AND MONTH(date) = MONTH(NOW()) 
-             AND YEAR(date) = YEAR(NOW())`,
-            [req.session.userId]
+             AND MONTH(date) = ? AND YEAR(date) = ?`,
+            [req.session.userId, targetMonth, targetYear]
         );
-        
         pageData.thisMonthIncome = monthlyResult[0]?.monthlyIncome || 0;
-        
+
     } catch (err) {
-        console.error("Error fetching transactions:", err);
+        console.error("Error fetching income transactions:", err);
     }
     
     renderPage(req, res, 'income', pageTitle, pageData);
@@ -242,15 +266,24 @@ app.get('/income', isAuthenticated, async (req, res) => {
 
 // POST route to add new income
 app.post('/income', isAuthenticated, async (req, res) => {
-    const { amount, source } = req.body;
+    const { amount, source, date } = req.body; // `date` expected as 'YYYY-MM-DD' from date input
     const userId = req.session.userId;
     
     try {
-        await db.query(
-            `INSERT INTO transactions (userid, date, amount, type, description) 
-             VALUES (?, NOW(), ?, 'income', ?)`,
-            [userId, amount, source]
-        );
+        if (date && /^\d{4}-\d{2}-\d{2}$/.test(date)) {
+            // Insert with provided date
+            await db.query(
+                `INSERT INTO transactions (userid, date, amount, type, description) 
+                 VALUES (?, ?, ?, 'income', ?)`,
+                [userId, date, amount, source]
+            );
+        } else {
+            await db.query(
+                `INSERT INTO transactions (userid, date, amount, type, description) 
+                 VALUES (?, NOW(), ?, 'income', ?)`,
+                [userId, amount, source]
+            );
+        }
         
         res.redirect('/income');
     } catch (err) {
