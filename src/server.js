@@ -76,11 +76,13 @@ const renderPage = (req, res, viewName, pageTitle, pageData = {}) => {
             console.error(err);
             return res.status(500).send('Error rendering page');
         }
+        // Provide `activePage` to the base template so header can highlight the correct nav item.
         res.render('baseof', { 
             title: pageTitle, 
             body: pageContent,
             isAuthenticated: !!req.session.userId,
-            username: req.session.username
+            username: req.session.username,
+            activePage: viewName
         });
     });
 };
