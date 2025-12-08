@@ -1,15 +1,16 @@
 <% if (!data.username) { %>
+<!-- MAIN CONTENT -->
 <div class="container p-4">
 
   <!-- HERO SECTION -->
-  <section class="text-center">
-    <h1 class="text-body-emphasis mt-3">Motivational Finance Tracker</h1>
-    <p class="col-lg-6 mx-auto fs-5 text-muted">
-      Welcome to Motivational Tracker — track your expenses, income, and more with confidence.
-    </p>
+  <section class="hero-section text-center bg-body-tertiary rounded-3 border border-opacity-50 p-3">
+<img src="/assets/img/logo.png" alt="Finance Tracker Logo" class="img-fluid my-4 bg-dark rounded" style="max-height:150px;">
+<h1 class="text-body-emphasis mt-3">Motivational Finance Tracker</h1>
+<p class="col-lg-6 mx-auto fs-5 text-muted">Welcome to Motivational Tracker — track your expenses, income, and more with confidence.</p>
 
-    <div class="mt-4">
-      <a href="/register" class="btn btn-success btn-lg px-4">Start now!</a>
+
+    <div class="mt-4 p-3 m-5">
+      <a href="#" class="btn btn-primary btn-lg px-4">Start now!</a>
     </div>
   </section>
 
@@ -57,7 +58,8 @@
 
   
   <section class="text-center mt-5">
-    <h2 class="fw-semibold">Features</h2>
+    <h2 class="fw-semibold">What’s Coming Soon</h2>
+    <p class="text-muted mb-5">A preview of what's planned for the future.</p>
 
     <div class="row g-4">
       <div class="col-md-4">
@@ -65,6 +67,14 @@
           <i class="bi bi-window-sidebar fs-1 text-primary"></i>
           <h5 class="mt-3">Modern UI Pages</h5>
           <p class="text-muted">Clean, responsive, and intuitive interfaces for better usability.</p>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="p-4 bg-body-secondary rounded-3 h-100">
+          <i class="bi bi-gear fs-1 text-success"></i>
+          <h5 class="mt-3">Interactive Features</h5>
+          <p class="text-muted">Dynamic forms, analytics, and financial tools.</p>
         </div>
       </div>
 
@@ -78,30 +88,39 @@
     </div>
   </section>
 
-  <section class="text-center mt-5">
-    <h2 class="fw-semibold">What’s Coming Soon</h2>
-    <p class="text-muted mb-5">A preview of what's planned for the future.</p>
-
-    <div class="row g-4">
-      <div class="col-md-4">
-        <div class="p-4 bg-body-secondary rounded-3 h-100">
-          <i class="bi bi-gear fs-1 text-success"></i>
-          <h5 class="mt-3">Interactive Features</h5>
-          <p class="text-muted">Dynamic forms, analytics, and financial tools.</p>
-        </div>
-      </div>
-
-    </div>
-  </section>
-
   <!-- ABOUT SECTION -->
   <section class="mt-5">
     <h1>About the Motivational Finance Tracker</h1>
     <p>
-      With rising living costs, a finance tracker has never been more essential.
-      The Motivational Finance Tracker App helps users manage their finances with clarity and confidence. 
+With rising living costs, having a reliable finance tracker has become more important than ever. The Motivational Finance Tracker App is designed to help users stay in control of their financial situation. It provides clear tools for tracking income, expenses, and overall spending habits. The app also offers motivating features that encourage users to stay consistent with their budgeting goals. Overall, it helps users manage their finances with greater clarity, confidence, and ease.
+
     </p>
+<br>
+  <h1>About the Team</h1>
+  <p>We built the Motivational Finance Tracker App to help users manage their finances simply and confidently.</p>
+
+  <section class="team mt-3">
+    <article class="member mb-3">
+      <h3>Kenthly Louise Iglesia (Developer)</h3>
+      <p>2nd year college student. A passionate learner focused on front-end development,creating clean, intuitive, and responsive UI designs for smooth user experiences.</p>
+    </article>
+
+    <article class="member mb-3">
+      <h3>Darwin Baysa (Developer)</h3>
+      <p>2nd year college student. A dedicated learner specializing in backend logic, system performance, and ensuring stable and efficient app operations.</p>
+    </article>
+
+    <article class="member mb-3">
+      <h3>John Rafeal Gonzales (Developer)</h3>
+      <p>2nd year college student. Focused on feature integration, testing, and app reliability. Ensures data accuracy and smooth system flow.</p>
+    </article>
   </section>
+</main>
+  <!-- FOOTER -->
+  <footer>
+    © 2025 Motivational Finance Tracker — All Rights Reserved
+  </footer>
+
 </div>
 <% } else { %>
 <div class="p-3">
