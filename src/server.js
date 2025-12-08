@@ -2,7 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const bodyParser = require("body-parser");
 const cookieParser = require('cookie-parser');
-const session = require('express-session');
+const cookieSession = require('cookie-session');
 const mysql = require("mysql2");
 let ejs = require('ejs');
 const path = require('path');
@@ -26,14 +26,15 @@ const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cookieParser());
-app.use(session({
-    secret: process.env.SESSION_SECRET || 'your-secret-key',
-    resave: false,
-    saveUninitialized: false,
-    cookie: { 
-        secure: false, // Set to true if using HTTPS
-        maxAge: 30 * 24 * 60 * 60 * 1000 // 30 days
-    }
+// Use encrypted cookie session (stored client-side) so no DB table is required.
+app.use(cookieSession({
+    name: 'session',
+    keys: [process.env.SESSION_SECRET || 'session-key'],
+    // No maxAge -> session cookie (expires on browser close). Set to a number (ms) for persistent cookie.
+    // secure: true in production when using HTTPS
+    secure: process.env.NODE_ENV === 'production',
+    httpOnly: true,
+    sameSite: 'lax'
 }));
 // Set EJS as the view engine
 app.set('view engine', 'ejs');
