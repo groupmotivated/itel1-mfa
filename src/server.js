@@ -729,6 +729,45 @@ app.get('/api/stats/expenses/category', isAuthenticated, async (req, res) => {
 });
 
 
+// Routes to render /register page
+app.get('/report', (req, res) => {
+    const pageTitle = 'Report an Issue';
+    const pageData = {
+        errorMessage: null,
+        successMessage: null
+    }
+    renderPage(req, res, 'reports', pageTitle, pageData);
+});
+
+
+app.post('/report', async (req, res) => {
+    const { name, email, category, reportdata } = req.body;
+
+    const pageTitle = 'Report an Issue';
+    const pageData = {
+        errorMessage: null,
+        successMessage: null
+    };
+
+    try {
+        // Insert into correct columns (uid auto-incremented)
+        await db.query(
+            `INSERT INTO userreports (name, email, category, reportdata)
+             VALUES (?, ?, ?, ?)`,
+            [name, email, category, reportdata]
+        );
+
+        pageData.successMessage = "Report submitted successfully! Thank you for your feedback.";
+
+        return renderPage(req, res, 'reports', pageTitle, pageData);
+
+    } catch (err) {
+        console.error("Database error:", err);
+
+        pageData.errorMessage = "Database error!";
+        return renderPage(req, res, 'reports', pageTitle, pageData);
+    }
+});
 
 
 

@@ -1,0 +1,41 @@
+<div class="p-3">
+    <h1>Report issues</h1>
+    <% if (data.errorMessage) { %>
+        <div class="alert alert-danger" role="alert">
+            <%= data.errorMessage %>
+        </div>
+    <% } else if (data.successMessage) { %>
+        <div class="alert alert-success" role="alert">
+            <%= data.successMessage %>
+        </div>
+    <% } %>
+
+    <form action="/report" method="POST">
+        <div class="mb-3">
+            <label for="reportername" class="form-label">Name</label>
+            <input type="text" class="form-control" id="reportername" name="name" required>
+        </div>
+        <div class="mb-3">
+            <label for="reporteremail" class="form-label">E-mail address</label>
+            <input type="text" class="form-control" id="reporteremail" name="email" required>
+        </div>
+        <div class="mb-3">
+            <label for="reportcategory" class="form-label">Type of issue</label>
+            <select class="form-select" id="reportcategory" name="category" required>
+                <option selected>Select type of issue</option>
+                <option value="1">Account-related issues</option>
+                <option value="2">Server connectivity issues</option>
+                <option value="3">Layout issues</option>
+                <option value="4">Accessibility</option>
+                <option value="5">Bugs and exploits</option>
+                <option value="9">Other issues</option>
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label for="reportdesc" class="form-label">Describe your issue:</label></label>
+            <textarea class="form-control" id="reportdesc" name="reportdata" required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+</div>
